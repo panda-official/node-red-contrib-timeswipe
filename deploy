@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+set -x
+
+scp ./{timeswipe.{js,html},timeswipe-async.js,package{.json,-lock.json}} mykola@pi.panda.technology:/home/mykola/node-red-contrib-timeswipe/
+
