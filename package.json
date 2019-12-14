@@ -9,6 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "timeswipe": "0.0.4"
   },
   "node-red": {

@@ -2,5 +2,5 @@
 
 set -x
 
-scp ./{timeswipe.{js,html},timeswipe-async.js,package{.json,-lock.json}} mykola@pi.panda.technology:/home/mykola/node-red-contrib-timeswipe/
+scp ./{timeswipe.{js,html},package{.json,-lock.json}} mykola@pi.panda.technology:/home/mykola/node-red-contrib-timeswipe/
 
