@@ -9,7 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "timeswipe": "0.0.3"
+    "timeswipe": "0.0.4"
   },
   "node-red": {
     "nodes": {

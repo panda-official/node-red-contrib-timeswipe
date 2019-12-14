@@ -1,7 +1,7 @@
 <script type="text/javascript">
   // https://nodered.org/docs/creating-nodes/node-html#node-definition
   RED.nodes.registerType("timeswipe", {
-    category: "common",
+    category: "sensors",
     defaults: {
       name: { value: "" },
 
@@ -20,9 +20,9 @@
       sensorTransmission0: { value: 1.0 },
       sensorTransmission1: { value: 1.0 },
       sensorTransmission2: { value: 1.0 },
-      sensorTransmission3: { value: 1.0 } 
-    }, 
-    inputs: 0,
+      sensorTransmission3: { value: 1.0 }
+    },
+    inputs: 1,
     outputs: 3,
     color: "#FDD0A2",
     paletteLabel: "timeswipe",
@@ -72,5 +72,47 @@
 </script>
 
 <script type="text/x-red" data-help-name="timeswipe">
-  <p>timeswipe wrapper for Node-RED</p>
+  <p><a href="https://www.npmjs.com/package/timeswipe" target="_blank">timeswipe</a> wrapper for Node-RED</p>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+       payload
+       <span class="property-type">object</span>
+    </dt>
+    <dd><code>{ cmd: string; options?: object; }</code></dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <ol class="node-ports">
+    <li>
+      Standard output
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">number[][]</span></dt>
+        <dd>timeswipe data</dd>
+      </dl>
+    </li>
+    <li>
+      Standard error
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">number | Error</span></dt>
+        <dd>timeswipe and JS errors</dd>
+      </dl>
+    </li>
+    <li>
+      Button
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd><code>{ counter: number; pressed: number; }</code></dd>
+      </dl>
+    </li>
+  </ol>
+
+  <h3>Details</h3>
+  <h4>Available commands</h4>
+  <ul>
+    <li>START</li>
+    <li>STOP</li>
+    <li>SET_SETTINGS</li>
+  </ul>
 </script>
