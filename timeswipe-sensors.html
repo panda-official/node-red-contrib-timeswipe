@@ -31,7 +31,37 @@
     },
     outputLabels: ["stdout", "stderr", "btn"],
     icon: "icons/timeswipe-logo.svg",
-    align: "left"
+    align: "left",
+    button: {
+      toggle: "buttonState",
+      enabled: function buttonEnabled() {
+        return this.status && this.status.text === "running";
+      },
+      onclick: function buttonOnClick() {
+        const node = this;
+        $.ajax({
+          url: "timeswipe-sensors/" + node.id,
+          type: "POST",
+          success: function buttonOnSuccess() {
+            RED.notify(
+              "Loop has been " +
+                (node.status.text === "running" ? "stopped" : "started"),
+              { type: "success", id: "timeswipe-sensors" }
+            );
+          },
+          error: function buttonOnError(jqXHR) {
+            switch (jqXHR.status) {
+              case 404:
+                RED.notify("Node not found", "error");
+                break;
+              case 500:
+              default:
+                RED.notify("Unexpected error", "error");
+            }
+          }
+        });
+      }
+    }
   });
 </script>
 

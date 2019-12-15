@@ -19,6 +19,14 @@ const CMD = {
   SET_SETTINGS: "SET_SETTINGS"
 };
 
+/**
+ * Possible node statuses
+ */
+const STATUS = {
+  RUNNING: "running",
+  STOPPED: "stopped"
+};
+
 module.exports = function registerTimeswipeSensorsNode(RED) {
   function TimeswipeSensorsNode(config) {
     const node = this;
@@ -62,18 +70,20 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      */
     function log(msg, level = "log") {
       const logMethod = node[level];
-      logMethod("timeswipe sensors: " + msg);
+      logMethod(`timeswipe ${config.name || "sensors"}: ${msg}`);
     }
 
     /**
      * Update the node status
      * https://nodered.org/docs/creating-nodes/node-js#setting-status
      */
-    function setStartedStatus() {
-      node.status({ fill: "green", shape: "dot", text: "running" });
+    function setRunningStatus() {
+      node.started = true;
+      node.status({ fill: "green", shape: "dot", text: STATUS.RUNNING });
     }
     function setStoppedStatus() {
-      node.status({ fill: "red", shape: "ring", text: "stoped" });
+      node.started = false;
+      node.status({ fill: "red", shape: "ring", text: STATUS.STOPPED });
     }
 
     /**
@@ -88,7 +98,7 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
           send(OUTPUTS.stdout, data);
         }
       });
-      setStartedStatus();
+      setRunningStatus();
     }
 
     /**
@@ -161,4 +171,28 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
    * https://nodered.org/docs/creating-nodes/node-js#node-constructor
    */
   RED.nodes.registerType("timeswipe-sensors", TimeswipeSensorsNode);
+
+  /**
+   * Handle button click
+   */
+  RED.httpAdmin.post(
+    "/timeswipe-sensors/:id",
+    RED.auth.needsPermission("inject.write"),
+    (req, res) => {
+      const node = RED.nodes.getNode(req.params.id);
+      if (node) {
+        try {
+          node.receive({
+            payload: { cmd: node.started ? CMD.STOP : CMD.START }
+          });
+          res.sendStatus(200);
+        } catch (error) {
+          res.sendStatus(500);
+          log(`Unexpected error: ${err.toString()}`, "error");
+        }
+      } else {
+        res.sendStatus(404);
+      }
+    }
+  );
 };
