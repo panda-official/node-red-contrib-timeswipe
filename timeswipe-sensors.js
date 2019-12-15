@@ -1,5 +1,4 @@
 const timeswipe = require("timeswipe");
-const throttle = require("lodash.throttle");
 
 /**
  * Node has 3 outputs:
@@ -20,14 +19,13 @@ const CMD = {
   SET_SETTINGS: "SET_SETTINGS"
 };
 
-module.exports = function registerTimeswipeNode(RED) {
-  function TimeswipeNode(config) {
+module.exports = function registerTimeswipeSensorsNode(RED) {
+  function TimeswipeSensorsNode(config) {
     const node = this;
     RED.nodes.createNode(node, config);
 
     const settings = {
       bridge: config.bridge ? 1 : 0,
-      throttle: parseInt(config.throttle, 10),
       sensorOffsets: [
         parseInt(config.sensorOffset0, 10),
         parseInt(config.sensorOffset1, 10),
@@ -64,7 +62,7 @@ module.exports = function registerTimeswipeNode(RED) {
      */
     function log(msg, level = "log") {
       const logMethod = node[level];
-      logMethod("timeswipe: " + msg);
+      logMethod("timeswipe sensors: " + msg);
     }
 
     /**
@@ -83,15 +81,13 @@ module.exports = function registerTimeswipeNode(RED) {
      */
     function runLoop() {
       log("start the loop");
-      timeswipe.Start(
-        throttle((data, error) => {
-          if (error) {
-            send(OUTPUTS.stderr, error);
-          } else {
-            send(OUTPUTS.stdout, data);
-          }
-        }, settings.throttle)
-      );
+      timeswipe.Start((data, error) => {
+        if (error) {
+          send(OUTPUTS.stderr, error);
+        } else if (data.length > 0) {
+          send(OUTPUTS.stdout, data);
+        }
+      });
       setStartedStatus();
     }
 
@@ -164,5 +160,5 @@ module.exports = function registerTimeswipeNode(RED) {
    * Register timeswipe node with Node-RED
    * https://nodered.org/docs/creating-nodes/node-js#node-constructor
    */
-  RED.nodes.registerType("timeswipe", TimeswipeNode);
+  RED.nodes.registerType("timeswipe-sensors", TimeswipeSensorsNode);
 };

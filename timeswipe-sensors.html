@@ -1,0 +1,118 @@
+<script type="text/javascript">
+  // https://nodered.org/docs/creating-nodes/node-html#node-definition
+  RED.nodes.registerType("timeswipe-sensors", {
+    category: "timeswipe",
+    defaults: {
+      name: { value: "" },
+
+      bridge: { value: 0 },
+
+      sensorOffset0: { value: 0 },
+      sensorOffset1: { value: 0 },
+      sensorOffset2: { value: 0 },
+      sensorOffset3: { value: 0 },
+
+      sensorGain0: { value: 1.0 },
+      sensorGain1: { value: 1.0 },
+      sensorGain2: { value: 1.0 },
+      sensorGain3: { value: 1.0 },
+
+      sensorTransmission0: { value: 1.0 },
+      sensorTransmission1: { value: 1.0 },
+      sensorTransmission2: { value: 1.0 },
+      sensorTransmission3: { value: 1.0 }
+    },
+    inputs: 1,
+    outputs: 3,
+    color: "#49c7ff",
+    paletteLabel: "sensors",
+    label: function label() {
+      return this.name || "sensors";
+    },
+    outputLabels: ["stdout", "stderr", "btn"],
+    icon: "icons/timeswipe-logo.svg",
+    align: "left"
+  });
+</script>
+
+<script type="text/x-red" data-template-name="timeswipe-sensors">
+  <div class="form-row">
+    <label for="node-input-name">Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-bridge">Secondary</label>
+    <input type="checkbox" id="node-input-bridge" style="display:inline-block;width:auto;vertical-align:baseline;">
+  </div>
+
+  <div class="form-row">
+    <label>Offsets</label>
+    <input id="node-input-sensorOffset0" type="number" min="0" max="65535" step="1" placeholder="0" style="width:80px;">
+    <input id="node-input-sensorOffset1" type="number" min="0" max="65535" step="1" placeholder="0" style="width:80px;">
+    <input id="node-input-sensorOffset2" type="number" min="0" max="65535" step="1" placeholder="0" style="width:80px;">
+    <input id="node-input-sensorOffset3" type="number" min="0" max="65535" step="1" placeholder="0" style="width:80px;">
+  </div>
+
+  <div class="form-row">
+    <label>Gains</label>
+    <input id="node-input-sensorGain0" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+    <input id="node-input-sensorGain1" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+    <input id="node-input-sensorGain2" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+    <input id="node-input-sensorGain3" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+  </div>
+
+  <div class="form-row">
+    <label>Transmissions</label>
+    <input id="node-input-sensorTransmission0" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+    <input id="node-input-sensorTransmission1" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+    <input id="node-input-sensorTransmission2" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+    <input id="node-input-sensorTransmission3" type="number" step="0.01" placeholder="1.0" style="width:80px;">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="timeswipe-sensors">
+  <p><a href="https://www.npmjs.com/package/timeswipe" target="_blank">timeswipe</a> wrapper for Node-RED</p>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+       payload
+       <span class="property-type">object</span>
+    </dt>
+    <dd><code>{ cmd: string; options?: object; }</code></dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <ol class="node-ports">
+    <li>
+      Standard output
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">number[][]</span></dt>
+        <dd>timeswipe data</dd>
+      </dl>
+    </li>
+    <li>
+      Standard error
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">number | Error</span></dt>
+        <dd>timeswipe errors</dd>
+      </dl>
+    </li>
+    <li>
+      Button
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd><code>{ counter: number; pressed: number; }</code></dd>
+      </dl>
+    </li>
+  </ol>
+
+  <h3>Details</h3>
+  <h4>Available commands</h4>
+  <ul>
+    <li>START</li>
+    <li>STOP</li>
+    <li>SET_SETTINGS</li>
+  </ul>
+</script>
