@@ -1,6 +1,0 @@
-#! /usr/bin/env bash
-
-set -x
-
-scp -r ./{timeswipe-sensors.{js,html},icons,package{.json,-lock.json}} mykola@pi.panda.technology:/home/mykola/node-red-contrib-timeswipe/
-
