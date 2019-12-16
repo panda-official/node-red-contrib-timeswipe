@@ -90,9 +90,10 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
             if (node._buffer.length < settings.bufferValue) {
               node._buffer = node._buffer.concat(payload);
             } else {
+              const left = node._buffer.splice(settings.bufferValue);
               messages[output] = { payload: node._buffer };
               node.send(messages);
-              node._buffer = [].concat(payload);
+              node._buffer = left.concat(payload);
             }
             break;
         }
