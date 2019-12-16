@@ -29,7 +29,7 @@ const STATUS = {
 
 const BUFFER_TYPE = {
   SECONDS: "seconds",
-  FRAMES: "frames"
+  SAMPLES: "samples"
 };
 
 module.exports = function registerTimeswipeSensorsNode(RED) {
@@ -86,7 +86,7 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
               }, settings.bufferValue * 1000);
             }
             break;
-          case BUFFER_TYPE.FRAMES:
+          case BUFFER_TYPE.SAMPLES:
             if (node._buffer.length < settings.bufferValue) {
               node._buffer = node._buffer.concat(payload);
             } else {
@@ -227,7 +227,7 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       if (node) {
         try {
           node.receive({
-            payload: { cmd: node.started ? CMD.STOP : CMD.START }
+            payload: { cmd: node._started ? CMD.STOP : CMD.START }
           });
           res.sendStatus(200);
         } catch (error) {

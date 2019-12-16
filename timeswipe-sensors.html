@@ -36,7 +36,7 @@
     icon: "icons/timeswipe-logo.svg",
     align: "left",
     button: {
-      toggle: "buttonState",
+      toggle: "active",
       enabled: function buttonEnabled() {
         return this.status && this.status.text === "running";
       },
@@ -47,8 +47,7 @@
           type: "POST",
           success: function buttonOnSuccess() {
             RED.notify(
-              "Loop has been " +
-                (node.status.text === "running" ? "stopped" : "started"),
+              "Loop has been " + (node.active ? "started" : "stopped"),
               { type: "success", id: "timeswipe-sensors" }
             );
           },
@@ -134,7 +133,7 @@
     <label>Buffer</label>
     <select id="timeswipe-sensors-buffer-select" style="width:165px;">
       <option value="">None</option>
-      <option value="frames">Frames</option>
+      <option value="samples">Samples</option>
       <!--<option value="seconds">Seconds</option>-->
     </select>
     <input id="node-input-bufferValue" type="number" min="1" step="1" style="width:80px;">
