@@ -29,6 +29,7 @@ const STATUS = {
 
 module.exports = function registerTimeswipeSensorsNode(RED) {
   function TimeswipeSensorsNode(config) {
+    RED.httpAdmin.notify("TEST");
     const node = this;
     RED.nodes.createNode(node, config);
 
