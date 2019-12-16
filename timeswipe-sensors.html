@@ -7,6 +7,9 @@
 
       bridge: { value: 0 },
 
+      bufferType: { value: "" },
+      bufferValue: { value: 0 },
+
       sensorOffset0: { value: 0 },
       sensorOffset1: { value: 0 },
       sensorOffset2: { value: 0 },
@@ -38,7 +41,7 @@
         return this.status && this.status.text === "running";
       },
       onclick: function buttonOnClick() {
-        const node = this;
+        var node = this;
         $.ajax({
           url: "timeswipe-sensors/" + node.id,
           type: "POST",
@@ -61,6 +64,33 @@
           }
         });
       }
+    },
+    oneditprepare: function onEditPrepare() {
+      var node = this;
+      var timeswipeSensorsBufferSelect = $("#timeswipe-sensors-buffer-select");
+      var nodeInputBufferType = $("#node-input-bufferType");
+      var nodeInputBufferValue = $("#node-input-bufferValue");
+
+      timeswipeSensorsBufferSelect.val(node.bufferType);
+      if (node.bufferType) {
+        nodeInputBufferValue.show();
+      } else {
+        nodeInputBufferValue.hide();
+      }
+
+      timeswipeSensorsBufferSelect.on(
+        "change",
+        function onBufferSelectChange() {
+          var currentVal = $(this).val();
+          nodeInputBufferType.val(currentVal);
+
+          if (currentVal) {
+            nodeInputBufferValue.show();
+          } else {
+            nodeInputBufferValue.hide();
+          }
+        }
+      );
     }
   });
 </script>
@@ -99,10 +129,23 @@
     <input id="node-input-sensorTransmission2" type="number" step="0.01" placeholder="1.0" style="width:80px;">
     <input id="node-input-sensorTransmission3" type="number" step="0.01" placeholder="1.0" style="width:80px;">
   </div>
+
+  <div class="form-row">
+    <label>Buffer</label>
+    <select id="timeswipe-sensors-buffer-select" style="width:165px;">
+      <option value="">None</option>
+      <option value="frames">Frames</option>
+      <!--<option value="seconds">Seconds</option>-->
+    </select>
+    <input id="node-input-bufferValue" type="number" min="1" step="1" style="width:80px;">
+    <input id="node-input-bufferType" type="hidden">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="timeswipe-sensors">
   <p><a href="https://www.npmjs.com/package/timeswipe" target="_blank">timeswipe</a> wrapper for Node-RED</p>
+  <h3>WARNING!</h3>
+  <p>Only ONE timeswipe sensors node can be running at time.</p>
 
   <h3>Inputs</h3>
   <dl class="message-properties">

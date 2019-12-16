@@ -27,14 +27,20 @@ const STATUS = {
   STOPPED: "stopped"
 };
 
+const BUFFER_TYPE = {
+  SECONDS: "seconds",
+  FRAMES: "frames"
+};
+
 module.exports = function registerTimeswipeSensorsNode(RED) {
   function TimeswipeSensorsNode(config) {
-    RED.httpAdmin.notify("TEST");
     const node = this;
     RED.nodes.createNode(node, config);
 
     const settings = {
       bridge: config.bridge ? 1 : 0,
+      bufferType: config.bufferType,
+      bufferValue: parseInt(config.bufferValue, 10),
       sensorOffsets: [
         parseInt(config.sensorOffset0, 10),
         parseInt(config.sensorOffset1, 10),
@@ -55,14 +61,45 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       ]
     };
 
+    node._started = false;
+    node._buffer = [];
+    node._interval = null;
+
     /**
      * Send message to the specified output
      * https://nodered.org/docs/creating-nodes/node-js#sending-messages
      */
     function send(output, payload) {
+      if (!node._started) return;
+
       const messages = [undefined, undefined, undefined];
-      messages[output] = { payload };
-      node.send(messages);
+
+      if (output === OUTPUTS.stdout && settings.bufferType) {
+        switch (settings.bufferType) {
+          case BUFFER_TYPE.SECONDS:
+            node._buffer = node._buffer.concat(payload);
+            if (!node._interval) {
+              node._interval = setInterval(() => {
+                messages[output] = { payload: node._buffer };
+                node.send(messages);
+                node._buffer = [];
+              }, settings.bufferValue * 1000);
+            }
+            break;
+          case BUFFER_TYPE.FRAMES:
+            if (node._buffer.length < settings.bufferValue) {
+              node._buffer = node._buffer.concat(payload);
+            } else {
+              messages[output] = { payload: node._buffer };
+              node.send(messages);
+              node._buffer = [].concat(payload);
+            }
+            break;
+        }
+      } else {
+        messages[output] = { payload };
+        node.send(messages);
+      }
     }
 
     /**
@@ -79,11 +116,9 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      * https://nodered.org/docs/creating-nodes/node-js#setting-status
      */
     function setRunningStatus() {
-      node.started = true;
       node.status({ fill: "green", shape: "dot", text: STATUS.RUNNING });
     }
     function setStoppedStatus() {
-      node.started = false;
       node.status({ fill: "red", shape: "ring", text: STATUS.STOPPED });
     }
 
@@ -92,6 +127,8 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      */
     function runLoop() {
       log("start the loop");
+      setRunningStatus();
+      node._started = true;
       timeswipe.Start((data, error) => {
         if (error) {
           send(OUTPUTS.stderr, error);
@@ -99,7 +136,6 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
           send(OUTPUTS.stdout, data);
         }
       });
-      setRunningStatus();
     }
 
     /**
@@ -107,8 +143,14 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      */
     function stopLoop() {
       log("stop the loop");
-      timeswipe.Stop();
       setStoppedStatus();
+      node._started = false;
+      timeswipe.Stop();
+
+      if (node._interval) {
+        clearInterval(node._interval);
+        node._interval = null;
+      }
     }
 
     /**
