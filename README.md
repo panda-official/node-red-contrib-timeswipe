@@ -1,4 +1,4 @@
-# [timeswipe](https://www.npmjs.com/package/timeswipe) wrapper for Node-RED
+# [timeswipe](https://www.npmjs.com/package/timeswipe) wrapper for Node-RED [![npm version](https://badge.fury.io/js/node-red-contrib-timeswipe.svg)](https://badge.fury.io/js/node-red-contrib-timeswipe)
 
 ## Installation
 
