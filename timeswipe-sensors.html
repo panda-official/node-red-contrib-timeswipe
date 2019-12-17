@@ -73,6 +73,14 @@
       timeswipeSensorsBufferSelect.val(node.bufferType);
       if (node.bufferType) {
         nodeInputBufferValue.show();
+        switch (node.bufferType) {
+          case "samples":
+            nodeInputBufferValue.attr("max", 150000);
+            break;
+          case "time":
+            nodeInputBufferValue.attr("max", 3000);
+            break;
+        }
       } else {
         nodeInputBufferValue.hide();
       }
@@ -85,6 +93,14 @@
 
           if (currentVal) {
             nodeInputBufferValue.show();
+            switch (currentVal) {
+              case "samples":
+                nodeInputBufferValue.attr("max", 150000);
+                break;
+              case "time":
+                nodeInputBufferValue.attr("max", 3000);
+                break;
+            }
           } else {
             nodeInputBufferValue.hide();
           }
@@ -134,7 +150,7 @@
     <select id="timeswipe-sensors-buffer-select" style="width:165px;">
       <option value="">None</option>
       <option value="samples">Samples</option>
-      <!--<option value="seconds">Seconds</option>-->
+      <option value="time">Time (ms)</option>
     </select>
     <input id="node-input-bufferValue" type="number" min="1" step="1" style="width:80px;">
     <input id="node-input-bufferType" type="hidden">

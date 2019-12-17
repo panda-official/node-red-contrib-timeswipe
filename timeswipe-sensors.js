@@ -28,7 +28,7 @@ const STATUS = {
 };
 
 const BUFFER_TYPE = {
-  SECONDS: "seconds",
+  TIME: "time",
   SAMPLES: "samples"
 };
 
@@ -75,28 +75,30 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       const messages = [undefined, undefined, undefined];
 
       if (output === OUTPUTS.stdout && settings.bufferType) {
-        switch (settings.bufferType) {
-          case BUFFER_TYPE.SECONDS:
-            node._buffer = node._buffer.concat(payload);
-            if (!node._interval) {
-              node._interval = setInterval(() => {
+        setImmediate(() => {
+          switch (settings.bufferType) {
+            case BUFFER_TYPE.TIME:
+              node._buffer = node._buffer.concat(payload);
+              if (!node._interval) {
+                node._interval = setInterval(() => {
+                  messages[output] = { payload: node._buffer };
+                  node.send(messages);
+                  node._buffer = [];
+                }, settings.bufferValue);
+              }
+              break;
+            case BUFFER_TYPE.SAMPLES:
+              if (node._buffer.length < settings.bufferValue) {
+                node._buffer = node._buffer.concat(payload);
+              } else {
+                const left = node._buffer.splice(settings.bufferValue);
                 messages[output] = { payload: node._buffer };
                 node.send(messages);
-                node._buffer = [];
-              }, settings.bufferValue * 1000);
-            }
-            break;
-          case BUFFER_TYPE.SAMPLES:
-            if (node._buffer.length < settings.bufferValue) {
-              node._buffer = node._buffer.concat(payload);
-            } else {
-              const left = node._buffer.splice(settings.bufferValue);
-              messages[output] = { payload: node._buffer };
-              node.send(messages);
-              node._buffer = left.concat(payload);
-            }
-            break;
-        }
+                node._buffer = left.concat(payload);
+              }
+              break;
+          }
+        });
       } else {
         messages[output] = { payload };
         node.send(messages);
@@ -145,13 +147,16 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
     function stopLoop() {
       log("stop the loop");
       setStoppedStatus();
-      node._started = false;
       timeswipe.Stop();
+      node._started = false;
 
-      if (node._interval) {
-        clearInterval(node._interval);
-        node._interval = null;
-      }
+      setImmediate(() => {
+        node._buffer = [];
+        if (node._interval) {
+          clearInterval(node._interval);
+          node._interval = null;
+        }
+      });
     }
 
     /**
