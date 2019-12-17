@@ -1,19 +1,55 @@
 <script type="text/javascript">
+  var BUFFER_SAMPLES_MAX = 150000;
+  var BUFFER_TIME_MAX = 3000;
+  var SENSOR_OFFSET_MAX = 65535;
+
+  function bufferSelectToggle(currentVal, nodeInputBufferValue) {
+    if (currentVal) {
+      nodeInputBufferValue.show();
+      switch (currentVal) {
+        case "samples":
+          nodeInputBufferValue.attr("max", BUFFER_SAMPLES_MAX);
+          break;
+        case "time":
+          nodeInputBufferValue.attr("max", BUFFER_TIME_MAX);
+          break;
+      }
+    } else {
+      nodeInputBufferValue.hide();
+    }
+  }
+
+  function sensorOffsetValidate(val) {
+    return val <= SENSOR_OFFSET_MAX && val >= 0;
+  }
+
   // https://nodered.org/docs/creating-nodes/node-html#node-definition
   RED.nodes.registerType("timeswipe-sensors", {
     category: "timeswipe",
     defaults: {
       name: { value: "" },
 
-      bridge: { value: 0 },
+      bridge: { value: false },
 
       bufferType: { value: "" },
-      bufferValue: { value: 0 },
+      bufferValue: {
+        value: 0,
+        validate: function bufferValueValidate(val) {
+          var node = this;
+          if (!node.bufferType) return true;
+          switch (node.bufferType) {
+            case "samples":
+              return val <= BUFFER_SAMPLES_MAX && val >= 0;
+            case "time":
+              return val <= BUFFER_TIME_MAX && val >= 0;
+          }
+        }
+      },
 
-      sensorOffset0: { value: 0 },
-      sensorOffset1: { value: 0 },
-      sensorOffset2: { value: 0 },
-      sensorOffset3: { value: 0 },
+      sensorOffset0: { value: 0, validate: sensorOffsetValidate },
+      sensorOffset1: { value: 0, validate: sensorOffsetValidate },
+      sensorOffset2: { value: 0, validate: sensorOffsetValidate },
+      sensorOffset3: { value: 0, validate: sensorOffsetValidate },
 
       sensorGain0: { value: 1.0 },
       sensorGain1: { value: 1.0 },
@@ -71,39 +107,14 @@
       var nodeInputBufferValue = $("#node-input-bufferValue");
 
       timeswipeSensorsBufferSelect.val(node.bufferType);
-      if (node.bufferType) {
-        nodeInputBufferValue.show();
-        switch (node.bufferType) {
-          case "samples":
-            nodeInputBufferValue.attr("max", 150000);
-            break;
-          case "time":
-            nodeInputBufferValue.attr("max", 3000);
-            break;
-        }
-      } else {
-        nodeInputBufferValue.hide();
-      }
+      bufferSelectToggle(node.bufferType, nodeInputBufferValue);
 
       timeswipeSensorsBufferSelect.on(
         "change",
         function onBufferSelectChange() {
           var currentVal = $(this).val();
           nodeInputBufferType.val(currentVal);
-
-          if (currentVal) {
-            nodeInputBufferValue.show();
-            switch (currentVal) {
-              case "samples":
-                nodeInputBufferValue.attr("max", 150000);
-                break;
-              case "time":
-                nodeInputBufferValue.attr("max", 3000);
-                break;
-            }
-          } else {
-            nodeInputBufferValue.hide();
-          }
+          bufferSelectToggle(currentVal, nodeInputBufferValue);
         }
       );
     }
