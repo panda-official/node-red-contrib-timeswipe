@@ -1,11 +1,16 @@
-# [timeswipe](https://www.npmjs.com/package/timeswipe) wrapper for Node-RED [![npm version](https://badge.fury.io/js/node-red-contrib-timeswipe.svg)](https://badge.fury.io/js/node-red-contrib-timeswipe)
+# [TimeSwipe](https://www.npmjs.com/package/timeswipe) wrapper for Node-RED [![npm version](https://badge.fury.io/js/node-red-contrib-timeswipe.svg)](https://badge.fury.io/js/node-red-contrib-timeswipe)
+
+## Prerequisites
+- Node-Red Installation ([for Raspberry Pi](https://nodered.org/docs/getting-started/raspberrypi))
+- Driver installation ([instructions](https://github.com/panda-official/TimeSwipe/tree/master/driver)) - latest driver for [download](https://github.com/panda-official/TimeSwipe/releases)
+- Run Node-Red with root permission (`sudo`)
 
 ## Installation
-
-`npm install --save node-red-contrib-timeswipe`
+```
+npm install --save node-red-contrib-timeswipe`
+```
 
 ## Example
-
 ```json 
 [
   {
