@@ -70,11 +70,9 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      * https://nodered.org/docs/creating-nodes/node-js#sending-messages
      */
     function send(output, payload) {
-      if (!node._started) return;
-
       const messages = [undefined, undefined, undefined];
 
-      if (output === OUTPUTS.stdout && settings.bufferType) {
+      if (output === OUTPUTS.stdout && node._started && settings.bufferType) {
         setImmediate(() => {
           switch (settings.bufferType) {
             case BUFFER_TYPE.TIME:
