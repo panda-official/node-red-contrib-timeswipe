@@ -86,14 +86,8 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
               }
               break;
             case BUFFER_TYPE.SAMPLES:
-              if (node._buffer.length < settings.bufferValue) {
-                node._buffer = node._buffer.concat(payload);
-              } else {
-                const left = node._buffer.splice(settings.bufferValue);
-                messages[output] = { payload: node._buffer };
-                node.send(messages);
-                node._buffer = left.concat(payload);
-              }
+              messages[output] = { payload };
+              node.send(messages);
               break;
           }
         });
@@ -174,6 +168,8 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       timeswipe.SetSensorGains(...settings.sensorGains);
       log(`set settings: sensorTransmissions: ${settings.sensorTransmissions}`);
       timeswipe.SetSensorTransmissions(...settings.sensorTransmissions);
+      log(`set settings: bufferValue: ${settings.bufferValue}`);
+      timeswipe.SetBurstSize(settings.bufferValue);
     }
 
     // There starts the actual work
