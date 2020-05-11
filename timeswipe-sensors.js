@@ -38,9 +38,10 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
     RED.nodes.createNode(node, config);
 
     const settings = {
-      bridge: config.bridge ? 1 : 0,
+      mode: config.mode ? 1 : 0,
       bufferType: config.bufferType,
       bufferValue: parseInt(config.bufferValue, 10),
+      sampleRate: parseInt(config.sampleRate, 10),
       sensorOffsets: [
         parseInt(config.sensorOffset0, 10),
         parseInt(config.sensorOffset1, 10),
@@ -154,14 +155,17 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
     /**
      * Update timeswipe settings
      *
-     * @param {number} settings.bridge – 0 or 1
+     * @param {number} settings.mode – 0 or 1
      * @param {[number, number, number, number]} settings.sensorOffsets – Array of 4 uint16, [0, 0, 0, 0]
      * @param {[number, number, number, number]} settings.sensorGains – Array of 4 floats, [1.0, 1.0, 1.0, 1.0]
      * @param {[number, number, number, number]} settings.sensorTransmissions - Array of 4 floats, [1.0, 1.0, 1.0, 1.0]
+     * @param {number} settings.bufferValue - float
+     * @param {number} settings.sampleRate - float
      */
     function setSettings(settings) {
-      log(`set settings: bridge: ${settings.bridge}`);
-      timeswipe.SetBridge(settings.bridge);
+      log(`set settings: mode: ${settings.mode}`);
+      timeswipe.SetSecondary(settings.mode);
+      // timeswipe.SetMode(settings.mode);
       log(`set settings: sensorOffsets: ${settings.sensorOffsets}`);
       timeswipe.SetSensorOffsets(...settings.sensorOffsets);
       log(`set settings: sensorGains: ${settings.sensorGains}`);
@@ -170,6 +174,8 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       timeswipe.SetSensorTransmissions(...settings.sensorTransmissions);
       log(`set settings: bufferValue: ${settings.bufferValue}`);
       timeswipe.SetBurstSize(settings.bufferValue);
+      log(`set settings: sampleRate: ${settings.sampleRate}`);
+      timeswipe.SetSampleRate(settings.sampleRate);
     }
 
     // There starts the actual work

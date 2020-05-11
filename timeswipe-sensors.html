@@ -29,11 +29,11 @@
     defaults: {
       name: { value: "" },
 
-      bridge: { value: false },
+      mode: { value: false },
 
-      bufferType: { value: "" },
+      bufferType: { value: "samples" },
       bufferValue: {
-        value: 0,
+        value: 48000,
         validate: function bufferValueValidate(val) {
           var node = this;
           if (!node.bufferType) return true;
@@ -45,6 +45,7 @@
           }
         }
       },
+      sampleRate: { value: 48000 },
 
       sensorOffset0: { value: 0, validate: sensorOffsetValidate },
       sensorOffset1: { value: 0, validate: sensorOffsetValidate },
@@ -105,6 +106,7 @@
       var timeswipeSensorsBufferSelect = $("#timeswipe-sensors-buffer-select");
       var nodeInputBufferType = $("#node-input-bufferType");
       var nodeInputBufferValue = $("#node-input-bufferValue");
+      var nodeInputSampleRate = $("#node-input-sampleRate");
 
       timeswipeSensorsBufferSelect.val(node.bufferType);
       bufferSelectToggle(node.bufferType, nodeInputBufferValue);
@@ -128,8 +130,8 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-bridge">Secondary</label>
-    <input type="checkbox" id="node-input-bridge" style="display:inline-block;width:auto;vertical-align:baseline;">
+    <label for="node-input-mode">Mode</label>
+    <input type="checkbox" id="node-input-mode" style="display:inline-block;width:auto;vertical-align:baseline;">
   </div>
 
   <div class="form-row">
@@ -165,6 +167,11 @@
     </select>
     <input id="node-input-bufferValue" type="number" min="1" step="1" style="width:80px;">
     <input id="node-input-bufferType" type="hidden">
+  </div>
+
+  <div class="form-row">
+    <label>SampleRate</label>
+    <input id="node-input-sampleRate" type="number" min="1" step="1" style="width:80px;">
   </div>
 </script>
 
