@@ -162,7 +162,7 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      * @param {number} settings.bufferValue - float
      * @param {number} settings.sampleRate - float
      */
-    function setSettings(settings) {
+    function init(settings) {
       log(`set settings: mode: ${settings.mode}`);
       timeswipe.SetSecondary(settings.mode);
       // timeswipe.SetMode(settings.mode);
@@ -178,10 +178,15 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       timeswipe.SetSampleRate(settings.sampleRate);
     }
 
+    function setSettings(settings) {
+      log(`set settings: ${settings}`);
+      timeswipe.SetSettings(JSON.stringify(settings))
+    }
+
     // There starts the actual work
     log("init");
     setStoppedStatus();
-    setSettings(settings);
+    init(settings);
 
     log("setup error handler");
     timeswipe.onError(error => {
