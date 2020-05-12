@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-timeswipe",
   "version": "0.1.4",
-  "description": "TimeSwipe sensors wrapper for Node-RED",
+  "description": "TimeSwipe Sensors Wrapper for Node-RED",
   "main": "timeswipe-sensors.js",
   "author": "Mykola Basov",
   "license": "GPL-3.0-or-later",
