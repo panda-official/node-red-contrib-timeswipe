@@ -164,8 +164,8 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
      */
     function init(settings) {
       log(`set settings: mode: ${settings.mode}`);
-      timeswipe.SetSecondary(settings.mode);
-      // timeswipe.SetMode(settings.mode);
+      // timeswipe.SetSecondary(settings.mode);
+      timeswipe.SetMode(settings.mode);
       log(`set settings: sensorOffsets: ${settings.sensorOffsets}`);
       timeswipe.SetSensorOffsets(...settings.sensorOffsets);
       log(`set settings: sensorGains: ${settings.sensorGains}`);
