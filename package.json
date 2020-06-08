@@ -16,7 +16,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "timeswipe": "0.0.11"
+    "timeswipe": "0.0.13"
   },
   "node-red": {
     "nodes": {
