@@ -7,7 +7,7 @@
 
 ## Installation
 ```
-npm install --save node-red-contrib-timeswipe`
+npm install --save node-red-contrib-timeswipe
 ```
 
 ## Example
