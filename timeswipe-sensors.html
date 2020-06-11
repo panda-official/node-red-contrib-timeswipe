@@ -29,7 +29,7 @@
     defaults: {
       name: { value: "" },
 
-      mode: { value: false },
+      mode: { value: "PRIMARY" },
 
       bufferType: { value: "samples" },
       bufferValue: {
@@ -131,7 +131,12 @@
 
   <div class="form-row">
     <label for="node-input-mode">Mode</label>
-    <input type="checkbox" id="node-input-mode" style="display:inline-block;width:auto;vertical-align:baseline;">
+    <select id="timeswipe-sensors-mode-select" style="width:165px;">
+      <option value="PRIMARY">PRIMARY</option>
+      <option value="NORM">NORM</option>
+      <option value="DIGITAL">DIGITAL</option>
+    </select>
+    <input id="node-input-mode" type="hidden">
   </div>
 
   <div class="form-row">
@@ -222,3 +227,4 @@
     <li>SET_SETTINGS</li>
   </ul>
 </script>
+

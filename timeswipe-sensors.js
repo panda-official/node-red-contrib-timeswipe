@@ -38,7 +38,7 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
     RED.nodes.createNode(node, config);
 
     const settings = {
-      mode: config.mode ? 1 : 0,
+      mode: config.mode,
       bufferType: config.bufferType,
       bufferValue: parseInt(config.bufferValue, 10),
       sampleRate: parseInt(config.sampleRate, 10),
@@ -155,7 +155,7 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
     /**
      * Update timeswipe settings
      *
-     * @param {number} settings.mode – 0 or 1
+     * @param {number} settings.mode – "PRIMARY", "NORM", or "DIGITAL"
      * @param {[number, number, number, number]} settings.sensorOffsets – Array of 4 uint16, [0, 0, 0, 0]
      * @param {[number, number, number, number]} settings.sensorGains – Array of 4 floats, [1.0, 1.0, 1.0, 1.0]
      * @param {[number, number, number, number]} settings.sensorTransmissions - Array of 4 floats, [1.0, 1.0, 1.0, 1.0]
@@ -193,10 +193,10 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       send(OUTPUTS.stderr, error);
     });
 
-    log("setup button handler");
-    timeswipe.onButton((pressed, counter) => {
-      send(OUTPUTS.btn, { pressed, counter });
-    });
+    // log("setup button handler");
+    // timeswipe.onButton((pressed, counter) => {
+    //   send(OUTPUTS.btn, { pressed, counter });
+    // });
 
     log("setup close handler");
     node.on("close", stopLoop);
@@ -249,3 +249,4 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
     }
   );
 };
+
