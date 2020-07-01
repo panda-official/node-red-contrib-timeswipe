@@ -16,7 +16,8 @@ const OUTPUTS = { stdout: 0, stderr: 1, btn: 2 };
 const CMD = {
   START: "START",
   STOP: "STOP",
-  SET_SETTINGS: "SET_SETTINGS"
+  SET_DRIVER_SETTINGS: "SET_DRIVER_SETTINGS",
+  SET_NODE_SETTINGS: "SET_NODE_SETTINGS"
 };
 
 /**
@@ -177,9 +178,36 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
       timeswipe.SetSampleRate(settings.sampleRate);
     }
 
-    function setSettings(settings) {
+    function setDriverSettings(settings) {
       log(`set settings: ${settings}`);
       timeswipe.SetSettings(JSON.stringify(settings))
+    }
+
+    function setNodeSettings(settings) {
+      if (settings.mode) {
+        log(`set settings: mode: ${settings.mode}`);
+        timeswipe.SetMode(settings.mode);
+      }
+      if (settings.sensorOffsets) {
+        log(`set settings: sensorOffsets: ${settings.sensorOffsets}`);
+        timeswipe.SetSensorOffsets(...settings.sensorOffsets);
+      }      
+      if (settings.sensorGains) {
+        log(`set settings: sensorGains: ${settings.sensorGains}`);
+        timeswipe.SetSensorGains(...settings.sensorGains);
+      }
+      if (settings.sensorTransmissions) {
+        log(`set settings: sensorTransmissions: ${settings.sensorTransmissions}`);
+        timeswipe.SetSensorTransmissions(...settings.sensorTransmissions);
+      }
+      if (settings.bufferValue) {
+        log(`set settings: bufferValue: ${settings.bufferValue}`);
+        timeswipe.SetBurstSize(settings.bufferValue);
+      }
+      if (settings.sampleRate) {
+        log(`set settings: sampleRate: ${settings.sampleRate}`);
+        timeswipe.SetSampleRate(settings.sampleRate);
+      }
     }
 
     // There starts the actual work
@@ -210,8 +238,11 @@ module.exports = function registerTimeswipeSensorsNode(RED) {
         case CMD.STOP:
           stopLoop();
           break;
-        case CMD.SET_SETTINGS:
-          setSettings(msg.payload.options);
+        case CMD.SET_DRIVER_SETTINGS:
+          setDriverSettings(msg.payload.options);
+          break;
+        case CMD.SET_NODE_SETTINGS:
+          setNodeSettings(msg.payload.options);
           break;
         default:
           log(`${msg.payload && msg.payload.cmd}: unknown input`);
